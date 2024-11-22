@@ -16,7 +16,7 @@ Only depends on the standard library.
 When printing byte counts using the `fmt` package, pass the values using `bytecount.N(n)`.
 
 You may pass width and precision if you wish. The default is to keep the output to
-a maximum of five characters while still showing as much precision as possible.
+a maximum of six characters while still showing as much precision as possible.
 
 If the formatting verb is `b` (e.g. `"%b"`), the value is multiplied by 8 and the
 suffix is changed from `B` (bytes) to `b` (bits).
