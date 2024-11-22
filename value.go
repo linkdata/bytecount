@@ -60,13 +60,17 @@ func (v Value) Format(f fmt.State, verb rune) {
 		buf = append(buf, unit)
 	}
 
-	if negative || len(buf) < wid {
+	buflen := len(buf)
+	if negative {
+		buflen++
+	}
+	if buflen < wid {
 		var pad []byte
 		padchar := byte(' ')
 		if f.Flag('0') && !f.Flag('-') {
 			padchar = '0'
 		}
-		for i := len(buf); i < wid; i++ {
+		for i := buflen; i < wid; i++ {
 			pad = append(pad, padchar)
 		}
 		if f.Flag('-') {
@@ -75,9 +79,9 @@ func (v Value) Format(f fmt.State, verb rune) {
 			pad = append(pad, buf...)
 			buf = pad
 		}
-		if negative {
-			buf = append([]byte{'-'}, buf...)
-		}
+	}
+	if negative {
+		buf = append([]byte{'-'}, buf...)
 	}
 
 	_, _ = f.Write(buf)
