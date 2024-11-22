@@ -19,7 +19,8 @@ You may pass width and precision if you wish. The default is to keep the output 
 a maximum of six characters while still showing as much precision as possible.
 
 If the formatting verb is `b` (e.g. `"%b"`), the value is multiplied by 8 and the
-suffix is changed from `B` (bytes) to `b` (bits).
+suffix is changed from `B` (bytes) to `b` (bits). If the `#` flag is given, no
+unit suffix is written.
 
 ## Example
 
