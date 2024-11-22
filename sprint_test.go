@@ -7,7 +7,7 @@ import (
 
 func TestSprint(t *testing.T) {
 	tests := []struct {
-		arg  float64
+		arg  float32
 		want string
 	}{
 		{

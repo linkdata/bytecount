@@ -2,7 +2,7 @@ package bytecount
 
 import "fmt"
 
-type Value float64
+type Value float32
 
 func (v Value) Format(f fmt.State, verb rune) {
 	wid := -1
@@ -18,5 +18,5 @@ func (v Value) Format(f fmt.State, verb rune) {
 	} else {
 		verb = 'B'
 	}
-	_, _ = Write(f, float64(v), wid, prec, verb)
+	_, _ = Write(f, float32(v), wid, prec, verb)
 }

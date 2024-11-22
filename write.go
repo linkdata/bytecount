@@ -3,10 +3,9 @@ package bytecount
 import (
 	"fmt"
 	"io"
-	"math"
 )
 
-func Write(w io.Writer, v float64, wid, prec int, unit rune) (int, error) {
+func Write(w io.Writer, v float32, wid, prec int, unit rune) (int, error) {
 	defs := func(w, p int) {
 		if wid < 0 {
 			wid = w
@@ -16,22 +15,29 @@ func Write(w io.Writer, v float64, wid, prec int, unit rune) (int, error) {
 		}
 	}
 	var scale rune
+	negative := v < 0
+	if negative {
+		v = -v
+	}
 	if v > 1000 {
 		for _, scale = range "KMGTPEZY" {
 			v /= 1024.0
-			if math.Abs(v) < 10 {
+			if v < 10 {
 				defs(1, 2)
 				break
 			}
-			if math.Abs(v) < 100 {
+			if v < 100 {
 				defs(2, 1)
 				break
 			}
-			if math.Abs(v) < 1000 {
+			if v < 1000 {
 				defs(3, 0)
 				break
 			}
 		}
+	}
+	if negative {
+		v = -v
 	}
 	defs(0, 0)
 	var suffix string
