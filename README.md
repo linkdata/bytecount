@@ -25,9 +25,9 @@ If the formatting verb is `d` (e.g. `"%d"`), the divisor is 1000 rather than 102
 If the formatting verb is `b` (e.g. `"%b"`), the value is multiplied by 8 and the
 unit suffix is changed from `B` (bytes) to `b` (bits).
 
-If the `#` flag is given, no unit suffix is written.
+If the `"#"` flag is given, no unit suffix is written.
 
-If the ` ` flag is given, a space is written between the digits and the suffix.
+If the `" "` flag is given, a space is written between the digits and the suffix.
 
 ## Example
 
