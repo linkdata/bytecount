@@ -10,14 +10,28 @@ type Value float32
 func (v Value) Format(f fmt.State, verb rune) {
 	var wid, prec int
 	var scale rune
+	divisor := Value(1024.0)
 
 	negative := v < 0
 	if negative {
 		v = -v
 	}
+
+	unit := byte('B')
+	switch verb {
+	case 'b':
+		v *= 8
+		unit = 'b'
+	case 'd':
+		divisor = 1000.0
+	}
+	if f.Flag('#') {
+		unit = 0
+	}
+
 	if v > 1000 {
-		for _, scale = range "KMGTPEZY" {
-			v /= 1024.0
+		for _, scale = range "kMGTPEZYRQ" {
+			v /= divisor
 			if v < 10 {
 				wid = 1
 				prec = 2
@@ -42,17 +56,11 @@ func (v Value) Format(f fmt.State, verb rune) {
 		prec = n
 	}
 
-	unit := byte('B')
-	if verb == 'b' {
-		v *= 8
-		unit = 'b'
-	}
-	if f.Flag('#') {
-		unit = 0
-	}
-
 	var buf []byte
 	buf = strconv.AppendFloat(buf, float64(v), 'f', prec, 32)
+	if f.Flag(' ') {
+		buf = append(buf, ' ')
+	}
 	if scale != 0 {
 		buf = append(buf, byte(scale))
 	}

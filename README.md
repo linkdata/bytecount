@@ -17,10 +17,17 @@ When printing byte counts using the `fmt` package, pass the values using `byteco
 
 You may pass width and precision if you wish. The default is to keep the output to
 a maximum of six characters while still showing as much precision as possible.
+The highest byte count printable is 268435440QB (Quetta-bytes, 10&#x00B3;&#x2070;),
+exceeding this will print `+InfQB`.
+
+If the formatting verb is `d` (e.g. `"%d"`), the divisor is 1000 rather than 1024.
 
 If the formatting verb is `b` (e.g. `"%b"`), the value is multiplied by 8 and the
-suffix is changed from `B` (bytes) to `b` (bits). If the `#` flag is given, no
-unit suffix is written.
+unit suffix is changed from `B` (bytes) to `b` (bits).
+
+If the `#` flag is given, no unit suffix is written.
+
+If the ` ` flag is given, a space is written between the digits and the suffix.
 
 ## Example
 
