@@ -1,5 +1,5 @@
 [![build](https://github.com/linkdata/bytecount/actions/workflows/go.yml/badge.svg)](https://github.com/linkdata/bytecount/actions/workflows/go.yml)
-[![coverage](https://coveralls.io/repos/github/linkdata/bytecount/badge.svg?branch=main)](https://coveralls.io/github/linkdata/bytecount?branch=main)
+[![coverage](https://github.com/linkdata/bytecount/blob/coverage/main/badge.svg)](https://htmlpreview.github.io/?https://github.com/linkdata/bytecount/blob/coverage/main/report.html)
 [![goreport](https://goreportcard.com/badge/github.com/linkdata/bytecount)](https://goreportcard.com/report/github.com/linkdata/bytecount)
 [![Docs](https://godoc.org/github.com/linkdata/bytecount?status.svg)](https://godoc.org/github.com/linkdata/bytecount)
 
