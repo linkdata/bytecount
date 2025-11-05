@@ -106,6 +106,10 @@ import (
 
 type Value float32
 
+func (v Value) String() string <span class="cov8" title="1">{
+        return fmt.Sprint(v)
+}</span>
+
 func (v Value) Format(f fmt.State, verb rune) <span class="cov8" title="1">{
         var wid, prec int
         var scale rune
