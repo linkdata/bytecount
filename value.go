@@ -7,6 +7,10 @@ import (
 
 type Value float32
 
+func (v Value) String() string {
+	return fmt.Sprint(v)
+}
+
 func (v Value) Format(f fmt.State, verb rune) {
 	var wid, prec int
 	var scale rune

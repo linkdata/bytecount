@@ -83,3 +83,11 @@ func TestValue_Format(t *testing.T) {
 		})
 	}
 }
+
+func TestValue_String(t *testing.T) {
+	want := "1.95kB"
+	got := N(2000).String()
+	if got != want {
+		t.Errorf("want %q got %q", want, got)
+	}
+}
