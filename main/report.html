@@ -116,16 +116,8 @@ func (v Value) Format(f fmt.State, verb rune) <span class="cov8" title="1">{
         var scale rune
         divisor := Value(1024.0)
         sign := byte(0)
+        unit := byte('B')
 
-        negative := math.Signbit(float64(v))
-        if negative </span><span class="cov8" title="1">{
-                v = Value(math.Abs(float64(v)))
-                sign = '-'
-        }</span> else<span class="cov8" title="1"> if f.Flag('+') </span><span class="cov8" title="1">{
-                sign = '+'
-        }</span>
-
-        <span class="cov8" title="1">unit := byte('B')
         switch verb </span>{
         case 'v':<span class="cov8" title="1"></span>
                 // default byte formatter
@@ -138,8 +130,17 @@ func (v Value) Format(f fmt.State, verb rune) <span class="cov8" title="1">{
                 _, _ = fmt.Fprintf(f, "%%!%c(%T=%v)", verb, v, float32(v))
                 return</span>
         }
+
         <span class="cov8" title="1">if f.Flag('#') </span><span class="cov8" title="1">{
                 unit = 0
+        }</span>
+
+        <span class="cov8" title="1">negative := math.Signbit(float64(v))
+        if negative </span><span class="cov8" title="1">{
+                v = Value(math.Abs(float64(v)))
+                sign = '-'
+        }</span> else<span class="cov8" title="1"> if f.Flag('+') </span><span class="cov8" title="1">{
+                sign = '+'
         }</span>
 
         <span class="cov8" title="1">if v &gt;= 1000 </span><span class="cov8" title="1">{
