@@ -8,6 +8,8 @@ import (
 
 func TestValue_Format(t *testing.T) {
 	overflow := N(math.MaxFloat64)
+	underflow := N(-math.MaxFloat64)
+	negzero := N(math.Copysign(0, -1))
 	tests := []struct {
 		name string
 		f    string
@@ -72,6 +74,21 @@ func TestValue_Format(t *testing.T) {
 			name: "+InfQB",
 			f:    "%v",
 			v:    overflow,
+		},
+		{
+			name: "-InfQB",
+			f:    "%v",
+			v:    underflow,
+		},
+		{
+			name: "-0B",
+			f:    "%v",
+			v:    negzero,
+		},
+		{
+			name: "-000000B",
+			f:    "%08v",
+			v:    negzero,
 		},
 	}
 	for _, tt := range tests {

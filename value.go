@@ -2,6 +2,7 @@ package bytecount
 
 import (
 	"fmt"
+	"math"
 	"strconv"
 )
 
@@ -16,9 +17,9 @@ func (v Value) Format(f fmt.State, verb rune) {
 	var scale rune
 	divisor := Value(1024.0)
 
-	negative := v < 0
+	negative := math.Signbit(float64(v))
 	if negative {
-		v = -v
+		v = Value(math.Abs(float64(v)))
 	}
 
 	unit := byte('B')
@@ -62,6 +63,9 @@ func (v Value) Format(f fmt.State, verb rune) {
 
 	var buf []byte
 	buf = strconv.AppendFloat(buf, float64(v), 'f', prec, 32)
+	if negative && len(buf) > 0 && buf[0] == '+' {
+		buf = buf[1:]
+	}
 	if f.Flag(' ') {
 		buf = append(buf, ' ')
 	}
