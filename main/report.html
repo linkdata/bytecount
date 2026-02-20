@@ -101,6 +101,7 @@ func Sprint[T numeric](v T) string <span class="cov8" title="1">{
 
 import (
         "fmt"
+        "math"
         "strconv"
 )
 
@@ -115,9 +116,9 @@ func (v Value) Format(f fmt.State, verb rune) <span class="cov8" title="1">{
         var scale rune
         divisor := Value(1024.0)
 
-        negative := v &lt; 0
+        negative := math.Signbit(float64(v))
         if negative </span><span class="cov8" title="1">{
-                v = -v
+                v = Value(math.Abs(float64(v)))
         }</span>
 
         <span class="cov8" title="1">unit := byte('B')
@@ -161,7 +162,10 @@ func (v Value) Format(f fmt.State, verb rune) <span class="cov8" title="1">{
 
         <span class="cov8" title="1">var buf []byte
         buf = strconv.AppendFloat(buf, float64(v), 'f', prec, 32)
-        if f.Flag(' ') </span><span class="cov8" title="1">{
+        if negative &amp;&amp; len(buf) &gt; 0 &amp;&amp; buf[0] == '+' </span><span class="cov8" title="1">{
+                buf = buf[1:]
+        }</span>
+        <span class="cov8" title="1">if f.Flag(' ') </span><span class="cov8" title="1">{
                 buf = append(buf, ' ')
         }</span>
         <span class="cov8" title="1">if scale != 0 </span><span class="cov8" title="1">{
