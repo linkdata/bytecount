@@ -46,6 +46,11 @@ func TestValue_Format(t *testing.T) {
 			v:    1536,
 		},
 		{
+			name: "1.00kB",
+			f:    "%d",
+			v:    1000,
+		},
+		{
 			name: "8b",
 			f:    "%b",
 			v:    1,

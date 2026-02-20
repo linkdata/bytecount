@@ -38,7 +38,7 @@ func (v Value) Format(f fmt.State, verb rune) {
 		unit = 0
 	}
 
-	if v > 1000 {
+	if v >= 1000 {
 		for _, scale = range "kMGTPEZYRQ" {
 			v /= divisor
 			if v < 10 {
