@@ -73,7 +73,7 @@ func (v Value) Format(f fmt.State, verb rune) {
 		}
 		buf = buf[1:]
 	}
-	if f.Flag(' ') {
+	if f.Flag(' ') && (scale != 0 || unit != 0) {
 		buf = append(buf, ' ')
 	}
 	if scale != 0 {

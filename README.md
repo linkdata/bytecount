@@ -20,6 +20,9 @@ a maximum of six characters while still showing as much precision as possible.
 The highest byte count printable is 268435440QB (Quetta-bytes, 10&#x00B3;&#x2070;),
 exceeding this will print `+InfQB`.
 
+`bytecount.Value` stores values as `float32`. Exact integer precision is therefore limited
+to 24 bits (16,777,216). Above that, neighboring integer byte counts may format identically.
+
 If the formatting verb is `d` (e.g. `"%d"`), the divisor is 1000 rather than 1024.
 
 If the formatting verb is `b` (e.g. `"%b"`), the value is multiplied by 8 and the

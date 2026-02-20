@@ -56,6 +56,11 @@ func TestValue_Format(t *testing.T) {
 			v:    1,
 		},
 		{
+			name: "1",
+			f:    "% #v",
+			v:    1,
+		},
+		{
 			name: "-01B",
 			f:    "%04v",
 			v:    -1,
