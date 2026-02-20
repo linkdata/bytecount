@@ -66,9 +66,24 @@ func TestValue_Format(t *testing.T) {
 			v:    -1,
 		},
 		{
+			name: "     -1B",
+			f:    "%8v",
+			v:    -1,
+		},
+		{
 			name: "-1 B",
 			f:    "%- 04v",
 			v:    -1,
+		},
+		{
+			name: "+1B",
+			f:    "%+v",
+			v:    1,
+		},
+		{
+			name: "     +1B",
+			f:    "%+8v",
+			v:    1,
 		},
 		{
 			name: "+InfQB",

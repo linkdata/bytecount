@@ -16,10 +16,14 @@ func (v Value) Format(f fmt.State, verb rune) {
 	var wid, prec int
 	var scale rune
 	divisor := Value(1024.0)
+	sign := byte(0)
 
 	negative := math.Signbit(float64(v))
 	if negative {
 		v = Value(math.Abs(float64(v)))
+		sign = '-'
+	} else if f.Flag('+') {
+		sign = '+'
 	}
 
 	unit := byte('B')
@@ -63,7 +67,10 @@ func (v Value) Format(f fmt.State, verb rune) {
 
 	var buf []byte
 	buf = strconv.AppendFloat(buf, float64(v), 'f', prec, 32)
-	if negative && len(buf) > 0 && buf[0] == '+' {
+	if len(buf) > 0 && (buf[0] == '+' || buf[0] == '-') {
+		if sign == 0 {
+			sign = buf[0]
+		}
 		buf = buf[1:]
 	}
 	if f.Flag(' ') {
@@ -77,28 +84,39 @@ func (v Value) Format(f fmt.State, verb rune) {
 	}
 
 	buflen := len(buf)
-	if negative {
+	if sign != 0 {
 		buflen++
 	}
-	if buflen < wid {
-		var pad []byte
-		padchar := byte(' ')
-		if f.Flag('0') && !f.Flag('-') {
-			padchar = '0'
-		}
-		for i := buflen; i < wid; i++ {
-			pad = append(pad, padchar)
-		}
-		if f.Flag('-') {
-			buf = append(buf, pad...)
-		} else {
-			pad = append(pad, buf...)
-			buf = pad
-		}
+	padchar := byte(' ')
+	if f.Flag('0') && !f.Flag('-') {
+		padchar = '0'
 	}
-	if negative {
-		buf = append([]byte{'-'}, buf...)
+	padlen := wid - buflen
+	if padlen < 0 {
+		padlen = 0
 	}
 
-	_, _ = f.Write(buf)
+	var out []byte
+	if f.Flag('-') {
+		if sign != 0 {
+			out = append(out, sign)
+		}
+		out = append(out, buf...)
+		for i := 0; i < padlen; i++ {
+			out = append(out, ' ')
+		}
+	} else {
+		if padchar == '0' && sign != 0 {
+			out = append(out, sign)
+		}
+		for i := 0; i < padlen; i++ {
+			out = append(out, padchar)
+		}
+		if padchar != '0' && sign != 0 {
+			out = append(out, sign)
+		}
+		out = append(out, buf...)
+	}
+
+	_, _ = f.Write(out)
 }
