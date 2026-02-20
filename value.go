@@ -14,6 +14,7 @@ func (v Value) String() string {
 
 func (v Value) Format(f fmt.State, verb rune) {
 	var wid, prec int
+	userPrec, hasUserPrec := f.Precision()
 	var scale rune
 	divisor := Value(1024.0)
 	sign := byte(0)
@@ -44,7 +45,13 @@ func (v Value) Format(f fmt.State, verb rune) {
 		sign = '+'
 	}
 
-	if v >= 1000 {
+	scaleAt := Value(1000)
+	if !hasUserPrec {
+		// With default precision (0), 999.5 rounds to 1000.
+		scaleAt = 999.5
+	}
+
+	if v >= scaleAt {
 		for _, scale = range "kMGTPEZYRQ" {
 			v /= divisor
 			if v < 10 {
@@ -67,8 +74,8 @@ func (v Value) Format(f fmt.State, verb rune) {
 	if n, ok := f.Width(); ok {
 		wid = n
 	}
-	if n, ok := f.Precision(); ok {
-		prec = n
+	if hasUserPrec {
+		prec = userPrec
 	}
 
 	var buf []byte
