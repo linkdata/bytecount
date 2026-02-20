@@ -127,17 +127,22 @@ func (v Value) Format(f fmt.State, verb rune) <span class="cov8" title="1">{
 
         <span class="cov8" title="1">unit := byte('B')
         switch verb </span>{
+        case 'v':<span class="cov8" title="1"></span>
+                // default byte formatter
         case 'b':<span class="cov8" title="1">
                 v *= 8
                 unit = 'b'</span>
         case 'd':<span class="cov8" title="1">
                 divisor = 1000.0</span>
+        default:<span class="cov8" title="1">
+                _, _ = fmt.Fprintf(f, "%%!%c(%T=%v)", verb, v, float32(v))
+                return</span>
         }
         <span class="cov8" title="1">if f.Flag('#') </span><span class="cov8" title="1">{
                 unit = 0
         }</span>
 
-        <span class="cov8" title="1">if v &gt; 1000 </span><span class="cov8" title="1">{
+        <span class="cov8" title="1">if v &gt;= 1000 </span><span class="cov8" title="1">{
                 for _, scale = range "kMGTPEZYRQ" </span><span class="cov8" title="1">{
                         v /= divisor
                         if v &lt; 10 </span><span class="cov8" title="1">{
