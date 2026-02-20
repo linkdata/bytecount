@@ -172,7 +172,7 @@ func (v Value) Format(f fmt.State, verb rune) <span class="cov8" title="1">{
                 }</span>
                 <span class="cov8" title="1">buf = buf[1:]</span>
         }
-        <span class="cov8" title="1">if f.Flag(' ') </span><span class="cov8" title="1">{
+        <span class="cov8" title="1">if f.Flag(' ') &amp;&amp; (scale != 0 || unit != 0) </span><span class="cov8" title="1">{
                 buf = append(buf, ' ')
         }</span>
         <span class="cov8" title="1">if scale != 0 </span><span class="cov8" title="1">{
