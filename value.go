@@ -28,11 +28,16 @@ func (v Value) Format(f fmt.State, verb rune) {
 
 	unit := byte('B')
 	switch verb {
+	case 'v':
+		// default byte formatter
 	case 'b':
 		v *= 8
 		unit = 'b'
 	case 'd':
 		divisor = 1000.0
+	default:
+		_, _ = fmt.Fprintf(f, "%%!%c(%T=%v)", verb, v, float32(v))
+		return
 	}
 	if f.Flag('#') {
 		unit = 0
