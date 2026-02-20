@@ -125,6 +125,11 @@ func TestValue_Format(t *testing.T) {
 			f:    "%q",
 			v:    31,
 		},
+		{
+			name: "%!x(bytecount.Value=-31)",
+			f:    "%x",
+			v:    -31,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

@@ -17,16 +17,8 @@ func (v Value) Format(f fmt.State, verb rune) {
 	var scale rune
 	divisor := Value(1024.0)
 	sign := byte(0)
-
-	negative := math.Signbit(float64(v))
-	if negative {
-		v = Value(math.Abs(float64(v)))
-		sign = '-'
-	} else if f.Flag('+') {
-		sign = '+'
-	}
-
 	unit := byte('B')
+
 	switch verb {
 	case 'v':
 		// default byte formatter
@@ -39,8 +31,17 @@ func (v Value) Format(f fmt.State, verb rune) {
 		_, _ = fmt.Fprintf(f, "%%!%c(%T=%v)", verb, v, float32(v))
 		return
 	}
+
 	if f.Flag('#') {
 		unit = 0
+	}
+
+	negative := math.Signbit(float64(v))
+	if negative {
+		v = Value(math.Abs(float64(v)))
+		sign = '-'
+	} else if f.Flag('+') {
+		sign = '+'
 	}
 
 	if v >= 1000 {
