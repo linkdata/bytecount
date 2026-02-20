@@ -113,6 +113,7 @@ func (v Value) String() string <span class="cov8" title="1">{
 
 func (v Value) Format(f fmt.State, verb rune) <span class="cov8" title="1">{
         var wid, prec int
+        userPrec, hasUserPrec := f.Precision()
         var scale rune
         divisor := Value(1024.0)
         sign := byte(0)
@@ -143,7 +144,13 @@ func (v Value) Format(f fmt.State, verb rune) <span class="cov8" title="1">{
                 sign = '+'
         }</span>
 
-        <span class="cov8" title="1">if v &gt;= 1000 </span><span class="cov8" title="1">{
+        <span class="cov8" title="1">scaleAt := Value(1000)
+        if !hasUserPrec </span><span class="cov8" title="1">{
+                // With default precision (0), 999.5 rounds to 1000.
+                scaleAt = 999.5
+        }</span>
+
+        <span class="cov8" title="1">if v &gt;= scaleAt </span><span class="cov8" title="1">{
                 for _, scale = range "kMGTPEZYRQ" </span><span class="cov8" title="1">{
                         v /= divisor
                         if v &lt; 10 </span><span class="cov8" title="1">{
@@ -166,8 +173,8 @@ func (v Value) Format(f fmt.State, verb rune) <span class="cov8" title="1">{
         <span class="cov8" title="1">if n, ok := f.Width(); ok </span><span class="cov8" title="1">{
                 wid = n
         }</span>
-        <span class="cov8" title="1">if n, ok := f.Precision(); ok </span><span class="cov8" title="1">{
-                prec = n
+        <span class="cov8" title="1">if hasUserPrec </span><span class="cov8" title="1">{
+                prec = userPrec
         }</span>
 
         <span class="cov8" title="1">var buf []byte
