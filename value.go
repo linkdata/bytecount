@@ -91,10 +91,7 @@ func (v Value) Format(f fmt.State, verb rune) {
 	if f.Flag('0') && !f.Flag('-') {
 		padchar = '0'
 	}
-	padlen := wid - buflen
-	if padlen < 0 {
-		padlen = 0
-	}
+	padlen := max(wid-buflen, 0)
 
 	var out []byte
 	if f.Flag('-') {
