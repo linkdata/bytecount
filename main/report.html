@@ -115,10 +115,14 @@ func (v Value) Format(f fmt.State, verb rune) <span class="cov8" title="1">{
         var wid, prec int
         var scale rune
         divisor := Value(1024.0)
+        sign := byte(0)
 
         negative := math.Signbit(float64(v))
         if negative </span><span class="cov8" title="1">{
                 v = Value(math.Abs(float64(v)))
+                sign = '-'
+        }</span> else<span class="cov8" title="1"> if f.Flag('+') </span><span class="cov8" title="1">{
+                sign = '+'
         }</span>
 
         <span class="cov8" title="1">unit := byte('B')
@@ -162,9 +166,12 @@ func (v Value) Format(f fmt.State, verb rune) <span class="cov8" title="1">{
 
         <span class="cov8" title="1">var buf []byte
         buf = strconv.AppendFloat(buf, float64(v), 'f', prec, 32)
-        if negative &amp;&amp; len(buf) &gt; 0 &amp;&amp; buf[0] == '+' </span><span class="cov8" title="1">{
-                buf = buf[1:]
-        }</span>
+        if len(buf) &gt; 0 &amp;&amp; (buf[0] == '+' || buf[0] == '-') </span><span class="cov8" title="1">{
+                if sign == 0 </span><span class="cov8" title="1">{
+                        sign = buf[0]
+                }</span>
+                <span class="cov8" title="1">buf = buf[1:]</span>
+        }
         <span class="cov8" title="1">if f.Flag(' ') </span><span class="cov8" title="1">{
                 buf = append(buf, ' ')
         }</span>
@@ -176,30 +183,38 @@ func (v Value) Format(f fmt.State, verb rune) <span class="cov8" title="1">{
         }</span>
 
         <span class="cov8" title="1">buflen := len(buf)
-        if negative </span><span class="cov8" title="1">{
+        if sign != 0 </span><span class="cov8" title="1">{
                 buflen++
         }</span>
-        <span class="cov8" title="1">if buflen &lt; wid </span><span class="cov8" title="1">{
-                var pad []byte
-                padchar := byte(' ')
-                if f.Flag('0') &amp;&amp; !f.Flag('-') </span><span class="cov8" title="1">{
-                        padchar = '0'
-                }</span>
-                <span class="cov8" title="1">for i := buflen; i &lt; wid; i++ </span><span class="cov8" title="1">{
-                        pad = append(pad, padchar)
-                }</span>
-                <span class="cov8" title="1">if f.Flag('-') </span><span class="cov8" title="1">{
-                        buf = append(buf, pad...)
-                }</span> else<span class="cov8" title="1"> {
-                        pad = append(pad, buf...)
-                        buf = pad
-                }</span>
-        }
-        <span class="cov8" title="1">if negative </span><span class="cov8" title="1">{
-                buf = append([]byte{'-'}, buf...)
+        <span class="cov8" title="1">padchar := byte(' ')
+        if f.Flag('0') &amp;&amp; !f.Flag('-') </span><span class="cov8" title="1">{
+                padchar = '0'
         }</span>
+        <span class="cov8" title="1">padlen := max(wid-buflen, 0)
 
-        <span class="cov8" title="1">_, _ = f.Write(buf)</span>
+        var out []byte
+        if f.Flag('-') </span><span class="cov8" title="1">{
+                if sign != 0 </span><span class="cov8" title="1">{
+                        out = append(out, sign)
+                }</span>
+                <span class="cov8" title="1">out = append(out, buf...)
+                for i := 0; i &lt; padlen; i++ </span><span class="cov8" title="1">{
+                        out = append(out, ' ')
+                }</span>
+        } else<span class="cov8" title="1"> {
+                if padchar == '0' &amp;&amp; sign != 0 </span><span class="cov8" title="1">{
+                        out = append(out, sign)
+                }</span>
+                <span class="cov8" title="1">for i := 0; i &lt; padlen; i++ </span><span class="cov8" title="1">{
+                        out = append(out, padchar)
+                }</span>
+                <span class="cov8" title="1">if padchar != '0' &amp;&amp; sign != 0 </span><span class="cov8" title="1">{
+                        out = append(out, sign)
+                }</span>
+                <span class="cov8" title="1">out = append(out, buf...)</span>
+        }
+
+        <span class="cov8" title="1">_, _ = f.Write(out)</span>
 }
 </pre>
 		
