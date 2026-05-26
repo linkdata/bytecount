@@ -6,12 +6,26 @@ import (
 	"strconv"
 )
 
+// Value is a byte count expressed as a float32, formatted via [Value.Format]
+// as a short human-readable string with an SI-style scale prefix and a unit
+// suffix (`B` for bytes, `b` for bits). The zero value formats as "0B".
 type Value float32
 
+// String returns the default formatting of v, equivalent to fmt.Sprint(v).
 func (v Value) String() string {
 	return fmt.Sprint(v)
 }
 
+// Format implements [fmt.Formatter]. It supports the verbs `v`, `d`, and `b`:
+//
+//   - `v`: bytes with a 1024 divisor and `B` suffix.
+//   - `d`: bytes with a 1000 (SI) divisor and `B` suffix.
+//   - `b`: bits (value multiplied by 8) with a 1024 divisor and `b` suffix.
+//
+// The `#` flag omits the unit suffix. The ` ` (space) flag inserts a space
+// between the digits and the scale/unit. The `+`, `-`, `0`, width, and
+// precision flags behave as in the standard fmt package. Unsupported verbs
+// produce the usual `%!verb(type=value)` error string.
 func (v Value) Format(f fmt.State, verb rune) {
 	var wid, prec int
 	userPrec, hasUserPrec := f.Precision()
