@@ -54,17 +54,20 @@ func (v Value) Format(f fmt.State, verb rune) {
 	if v >= scaleAt {
 		for _, scale = range "kMGTPEZYRQ" {
 			v /= divisor
-			if v < 10 {
+			// Thresholds are nudged below the next power of ten so that
+			// values that would round up across a tier (e.g. 9.999 → "10.00")
+			// fall into the next branch and keep the 6-character budget.
+			if v < 9.995 {
 				wid = 1
 				prec = 2
 				break
 			}
-			if v < 100 {
+			if v < 99.95 {
 				wid = 2
 				prec = 1
 				break
 			}
-			if v < 1000 {
+			if v < 999.5 {
 				wid = 3
 				prec = 0
 				break
