@@ -48,6 +48,4 @@ jobs:
         with:
           coverage: ${{ steps.coverage.outputs.coverage }}
           report:   "coveragereport.html.out"
-      - name: Go report card
-        uses: creekorful/goreportcard-action@v1.0
 
