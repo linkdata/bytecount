@@ -75,12 +75,16 @@
 		
 		<pre class="file" id="file0" style="display: none">package bytecount
 
+// numeric is the set of numeric types accepted by [N] and [Sprint].
 type numeric interface {
         ~float32 | ~float64 |
                 ~int | ~int8 | ~int16 | ~int32 | ~int64 |
                 ~uint | ~uint8 | ~uint16 | ~uint32 | ~uint64
 }
 
+// N converts any numeric value to a [Value] suitable for passing to the fmt
+// package. Conversion goes through float32, so very large or very precise
+// integers may lose precision.
 func N[T numeric](n T) Value <span class="cov8" title="1">{
         return Value(n)
 }</span>
@@ -92,6 +96,8 @@ import (
         "fmt"
 )
 
+// Sprint returns the default human-readable formatting of v, equivalent to
+// fmt.Sprint(N(v)).
 func Sprint[T numeric](v T) string <span class="cov8" title="1">{
         return fmt.Sprint(N(v))
 }</span>
@@ -105,12 +111,26 @@ import (
         "strconv"
 )
 
+// Value is a byte count expressed as a float32, formatted via [Value.Format]
+// as a short human-readable string with an SI-style scale prefix and a unit
+// suffix (`B` for bytes, `b` for bits). The zero value formats as "0B".
 type Value float32
 
+// String returns the default formatting of v, equivalent to fmt.Sprint(v).
 func (v Value) String() string <span class="cov8" title="1">{
         return fmt.Sprint(v)
 }</span>
 
+// Format implements [fmt.Formatter]. It supports the verbs `v`, `d`, and `b`:
+//
+//   - `v`: bytes with a 1024 divisor and `B` suffix.
+//   - `d`: bytes with a 1000 (SI) divisor and `B` suffix.
+//   - `b`: bits (value multiplied by 8) with a 1024 divisor and `b` suffix.
+//
+// The `#` flag omits the unit suffix. The ` ` (space) flag inserts a space
+// between the digits and the scale/unit. The `+`, `-`, `0`, width, and
+// precision flags behave as in the standard fmt package. Unsupported verbs
+// produce the usual `%!verb(type=value)` error string.
 func (v Value) Format(f fmt.State, verb rune) <span class="cov8" title="1">{
         var wid, prec int
         userPrec, hasUserPrec := f.Precision()
@@ -153,17 +173,20 @@ func (v Value) Format(f fmt.State, verb rune) <span class="cov8" title="1">{
         <span class="cov8" title="1">if v &gt;= scaleAt </span><span class="cov8" title="1">{
                 for _, scale = range "kMGTPEZYRQ" </span><span class="cov8" title="1">{
                         v /= divisor
-                        if v &lt; 10 </span><span class="cov8" title="1">{
+                        // Thresholds are nudged below the next power of ten so that
+                        // values that would round up across a tier (e.g. 9.999 → "10.00")
+                        // fall into the next branch and keep the 6-character budget.
+                        if v &lt; 9.995 </span><span class="cov8" title="1">{
                                 wid = 1
                                 prec = 2
                                 break</span>
                         }
-                        <span class="cov8" title="1">if v &lt; 100 </span><span class="cov8" title="1">{
+                        <span class="cov8" title="1">if v &lt; 99.95 </span><span class="cov8" title="1">{
                                 wid = 2
                                 prec = 1
                                 break</span>
                         }
-                        <span class="cov8" title="1">if v &lt; 1000 </span><span class="cov8" title="1">{
+                        <span class="cov8" title="1">if v &lt; 999.5 </span><span class="cov8" title="1">{
                                 wid = 3
                                 prec = 0
                                 break</span>
